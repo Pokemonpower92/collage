@@ -23,13 +23,13 @@ func LoadCloudImage(bucket string, path string) ([]image.Image, error) {
 // Loads an image file indicated by the local path.
 func LoadLocalImage(path string) (image.Image, error) {
 	reader, err := os.Open(path)
+	defer reader.Close()
 	if err != nil {
 		return nil, &ImageLoadError{
 			time.Now(),
 			err,
 		}
 	}
-	defer reader.Close()
 
 	if img, _, err := image.Decode(reader); err != nil {
 		return img, nil
