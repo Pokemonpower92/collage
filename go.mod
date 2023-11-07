@@ -1,3 +1,3 @@
-module github.com/pokwemonpower92/collage
+module github.com/pokemonpower92/collage
 
 go 1.21.3
