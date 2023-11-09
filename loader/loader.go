@@ -18,12 +18,11 @@ func (ile *ImageLoadError) Error() string {
 	return ile.What
 }
 
-// Resize the given image.
 func resize(img image.Image, width int, height int) *image.RGBA {
 	bounds := image.Rect(0, 0, width, height)
 	resized := image.NewRGBA(bounds)
 
-	draw.NearestNeighbor.Scale(resized, resized.Rect, img, img.Bounds(), draw.Over, nil)
+	draw.ApproxBiLinear.Scale(resized, resized.Rect, img, img.Bounds(), draw.Over, nil)
 
 	return resized
 }
@@ -57,7 +56,7 @@ func LoadLocalImage(path string) (*image.RGBA, error) {
 		}
 
 	} else {
-		return convertToRGBA(resize(img, 50, 50)), nil
+		return convertToRGBA(resize(img, 200, 200)), nil
 	}
 }
 
