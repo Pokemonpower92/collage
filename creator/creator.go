@@ -20,7 +20,6 @@ func Create(target *image.RGBA, colormap colormap.ColorMap) *image.RGBA {
 		for y := 0; y < targetBounds.Dy(); y++ {
 			closestImage := colormap.FindClosestImage(target.At(x, y).(color.RGBA))
 			destRect := image.Rect(x*200+200, y*200+200, x*200, y*200)
-			// draw.Draw(result, image.Rect(0, currentY, bounds.Dx(), currentY+bounds.Dy()), img, image.Point{0, 0}, draw.Over)
 			draw.Draw(collage, destRect, closestImage, image.Point{0, 0}, draw.Over)
 		}
 	}

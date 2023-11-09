@@ -6,9 +6,12 @@ import (
 	"testing"
 )
 
+const targetPath = "../images/test_images/target_images/gopher.png"
+const imageSetPath = "../images/test_images/target_images"
+const badPath = "Bad Path"
+
 func TestLoadLocalImage(t *testing.T) {
-	path := "./test_images/target_images/gopher.png"
-	if img, err := LoadLocalImage(path); err != nil {
+	if img, err := LoadLocalImage(targetPath); err != nil {
 		log.Printf("TestLoadLocalImage FAILED: %v\n", err)
 		t.Fail()
 	} else {
@@ -20,8 +23,7 @@ func TestLoadLocalImage(t *testing.T) {
 }
 
 func TestLoadLocalImageInvalidPath(t *testing.T) {
-	path := "NoSuchPath"
-	_, err := LoadLocalImage(path)
+	_, err := LoadLocalImage(badPath)
 	if err == nil {
 		log.Printf("TestLoadLocalImageInvalidPath FAILED: %v\n", err)
 		t.Fail()
@@ -29,8 +31,7 @@ func TestLoadLocalImageInvalidPath(t *testing.T) {
 }
 
 func TestLoadLocalImageSet(t *testing.T) {
-	path := "./test_images/image_sets/gopher"
-	if imgs, err := LoadLocalImageSet(path); err != nil {
+	if imgs, err := LoadLocalImageSet(imageSetPath); err != nil {
 		log.Printf("TestLoadLocalImageSet FAILED: %v\n", err)
 		t.Fail()
 	} else {
@@ -46,8 +47,7 @@ func TestLoadLocalImageSet(t *testing.T) {
 }
 
 func TestLoadLocalImageSetInvalidPath(t *testing.T) {
-	invalidImageSetpath := "./test_images/image_set/gopher"
-	if _, err := LoadLocalImageSet(invalidImageSetpath); err == nil {
+	if _, err := LoadLocalImageSet(badPath); err == nil {
 		log.Printf("TestLoadLocalImageSetInvalidPath FAILED: %v\n", err)
 		t.Fail()
 	}
