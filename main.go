@@ -2,49 +2,31 @@ package main
 
 import (
 	"fmt"
-	"image"
-	"image/jpeg"
 	"log/slog"
-	"os"
 
 	"github.com/pokemonpower92/collage/colormap"
 	"github.com/pokemonpower92/collage/creator"
+	"github.com/pokemonpower92/collage/exporter"
 	"github.com/pokemonpower92/collage/loader"
 )
 
-func saveImageToFile(img image.Image, filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Encode the image to the desired format (e.g., JPEG)
-	err = jpeg.Encode(file, img, nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func main() {
-	target, err := loader.LoadLocalImage("images/test_images/target_images/nancy.jpeg")
+	target, err := loader.LoadLocalImage("images/test_images/target_images/gopher.png")
 	if err != nil {
 		slog.Error(fmt.Sprintf("%v\n", err))
 	}
 
-	if imageSet, err := loader.LoadLocalImageSet("images/test_images/image_sets/penis"); err != nil {
+	if imageSet, err := loader.LoadLocalImageSet("images/test_images/image_sets/rgba"); err != nil {
 		slog.Error(fmt.Sprintf("%v\n", err))
 	} else {
-		slog.Info(fmt.Sprintf("Successfully loaded an image set with %d image(s).\n", len(imageSet)))
+		slog.Info(fmt.Sprintf("Successfully loaded an image set.\n"))
 
 		colormap := colormap.NewColorMap(imageSet)
-		slog.Info(fmt.Sprintf("ColorMap: %v\n", colormap))
+		slog.Info(fmt.Sprintf("Successfully generated colormapping.\n"))
 
 		collage := creator.Create(target, colormap)
 
-		if err := saveImageToFile(collage, "./output.jpeg"); err != nil {
+		if err := exporter.ExportToLocalFile(collage, "./output.jpeg"); err != nil {
 			slog.Error(fmt.Sprintf("%v\n", err))
 		}
 	}
