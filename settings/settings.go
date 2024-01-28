@@ -1,7 +1,7 @@
 package settings
 
 import (
-	"github.com/pokemonpower92/collage/common"
+	"collage/common"
 )
 
 type Settings struct {

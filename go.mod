@@ -1,4 +1,4 @@
-module github.com/pokemonpower92/collage
+module collage
 
 go 1.21.3
 

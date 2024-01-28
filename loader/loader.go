@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/pokemonpower92/collage/common"
-	"github.com/pokemonpower92/collage/settings"
+	"collage/common"
+	"collage/settings"
 )
 
 type ImageLoadError struct {

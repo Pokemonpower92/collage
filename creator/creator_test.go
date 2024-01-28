@@ -4,9 +4,9 @@ import (
 	"image"
 	"testing"
 
-	"github.com/pokemonpower92/collage/colormap"
-	"github.com/pokemonpower92/collage/common"
-	"github.com/pokemonpower92/collage/settings"
+	"collage/colormap"
+	"collage/common"
+	"collage/settings"
 )
 
 func NewTestEnvironment() settings.Environment {
