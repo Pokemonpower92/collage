@@ -2,8 +2,8 @@ package creator
 
 import "testing"
 
-// This should be exersized by
-// integration tests.
+// TestCreate: Test the Create function
 func TestCreate(t *testing.T) {
-	t.Failed()
+	t.Log("TestCreate: Test the Create function")
+	t.Log("Test not implemented.")
 }

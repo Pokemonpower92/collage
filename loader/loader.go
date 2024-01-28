@@ -7,13 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"golang.org/x/image/draw"
+	"github.com/pokemonpower92/collage/common"
+	"github.com/pokemonpower92/collage/settings"
 )
-
-type Dimensions struct {
-	Height int
-	Width  int
-}
 
 type ImageLoadError struct {
 	What string
@@ -36,18 +32,8 @@ func convertToRGBA(img image.Image) *image.RGBA {
 	return rgba
 }
 
-// Resize the given img to the given dims
-func Resize(img image.Image, dims Dimensions) *image.RGBA {
-	bounds := image.Rect(0, 0, dims.Width, dims.Height)
-	resized := image.NewRGBA(bounds)
-
-	draw.ApproxBiLinear.Scale(resized, resized.Rect, img, img.Bounds(), draw.Over, nil)
-
-	return resized
-}
-
 // Loads an image file indicated by the local path.
-func LoadImage(path string, dims Dimensions) (*image.RGBA, error) {
+func LoadImage(path string, dims common.Dimensions) (*image.RGBA, error) {
 	reader, err := os.Open(path)
 	if err != nil {
 		return nil, &ImageLoadError{
@@ -62,25 +48,23 @@ func LoadImage(path string, dims Dimensions) (*image.RGBA, error) {
 		}
 
 	} else {
-		return convertToRGBA(Resize(img, dims)), nil
+		return convertToRGBA(common.Resize(img, dims)), nil
 	}
 }
 
 type ImageLoader struct {
-	TargetDims   Dimensions
-	ImageSetDims Dimensions
+	Settings settings.Settings
 }
 
-func NewImageLoader(targetDims Dimensions, imageSetDims Dimensions) *ImageLoader {
+func NewImageLoader(settings settings.Settings) *ImageLoader {
 	return &ImageLoader{
-		TargetDims:   targetDims,
-		ImageSetDims: imageSetDims,
+		Settings: settings,
 	}
 }
 
 // Loads the target image located in the given local path.
 func (il *ImageLoader) LoadTargetImage(path string) (*image.RGBA, error) {
-	img, err := LoadImage(path, il.TargetDims)
+	img, err := LoadImage(path, il.Settings.TargetImageDims)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +82,7 @@ func (il *ImageLoader) LoadImageSet(path string) ([]*image.RGBA, error) {
 
 		for _, imgFile := range imageFiles {
 			imgFilePath := filepath.Join(path, imgFile.Name())
-			if img, err := LoadImage(imgFilePath, il.ImageSetDims); err != nil {
+			if img, err := LoadImage(imgFilePath, il.Settings.ImageSetDims); err != nil {
 				return nil, err
 			} else {
 				imgSet = append(imgSet, img)
