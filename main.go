@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	"github.com/pokemonpower92/collage/colormap"
-	"github.com/pokemonpower92/collage/common"
 	"github.com/pokemonpower92/collage/creator"
 	"github.com/pokemonpower92/collage/exporter"
 	"github.com/pokemonpower92/collage/loader"
@@ -14,6 +13,8 @@ import (
 
 func main() {
 	imageLoaderSettings := settings.NewSettings()
+	imageLoaderEnvironment := settings.NewEnvironment()
+
 	il := loader.NewImageLoader(*imageLoaderSettings)
 
 	target, err := il.LoadTargetImage("images/test_images/target_images/gopher.png")
@@ -21,7 +22,7 @@ func main() {
 		slog.Error(fmt.Sprintf("%v\n", err))
 	}
 
-	if imageSet, err := il.LoadImageSet("images/image_sets/penis"); err != nil {
+	if imageSet, err := il.LoadImageSet("images/test_images/image_sets/rgba"); err != nil {
 		slog.Error(fmt.Sprintf("%v\n", err))
 	} else {
 		slog.Info(fmt.Sprintf("Successfully loaded an image set.\n"))
@@ -29,11 +30,12 @@ func main() {
 		colormap := colormap.NewColorMap(imageSet)
 		slog.Info(fmt.Sprintf("Successfully generated colormapping.\n"))
 
-		collage := creator.Create(target, colormap, 6)
-		slog.Info(fmt.Sprintf("Successfully generated collage.\n"))
+		ctr := creator.NewCreator(*imageLoaderSettings, *imageLoaderEnvironment)
+		ctr.SetTargetImage(target)
+		ctr.SetColorMap(&colormap)
 
-		collage = common.Resize(collage, common.Dimensions{Height: 800, Width: 600})
-		slog.Info(fmt.Sprintf("Successfully resized collage.\n"))
+		collage := ctr.Create()
+		slog.Info(fmt.Sprintf("Successfully generated collage.\n"))
 
 		if err := exporter.ExportToLocalFile(collage, "./output.jpeg"); err != nil {
 			slog.Error(fmt.Sprintf("%v\n", err))
