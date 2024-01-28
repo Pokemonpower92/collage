@@ -13,29 +13,7 @@ import (
 	"github.com/pokemonpower92/collage/settings"
 )
 
-// Create: Will split the target image into equal parts
-// and then start a new thread for each pointison.
-
-// Each thread will run drawClosestImage which takes the dimensions of
-// the split and will draw the closest images in place.
-
-// --- --- --- --- -- -- -- --
-// 20 / 8 = 2
-// 20 % 8 = 4
-
-// func drawClosestImage(collage *image.RGBA, target *image.RGBA, start int, end int, colormap colormap.ColorMap) {
-// 	bounds := target.Bounds()
-
-// 	for pixel := start; pixel != end; pixel++ {
-// 		x := pixel % bounds.Dy()
-// 		y := pixel / bounds.Dy()
-
-// 		closestImage := colormap.FindClosestImage(target.At(x, y).(color.RGBA))
-// 		destRect := image.Rect(x*350+350, y*350+350, x*350, y*350)
-// 		draw.Draw(collage, destRect, closestImage, image.Point{0, 0}, draw.Over)
-// 	}
-// }
-
+// Creator is a struct that contains the settings and environment for creating a collage.
 type Creator struct {
 	settings    settings.Settings
 	environment settings.Environment
@@ -43,6 +21,7 @@ type Creator struct {
 	colorMap    *colormap.ColorMap
 }
 
+// NewCreator creates a new instance of the Creator struct.
 func NewCreator(settings settings.Settings, environment settings.Environment) *Creator {
 	return &Creator{
 		settings:    settings,
@@ -50,15 +29,19 @@ func NewCreator(settings settings.Settings, environment settings.Environment) *C
 	}
 }
 
+// SetTargetImage sets the target image for the collage.
 func (c *Creator) SetTargetImage(targetImage *image.RGBA) {
 	c.targetImage = targetImage
 }
 
+// SetColorMap sets the color map for the collage.
 func (c *Creator) SetColorMap(colorMap *colormap.ColorMap) {
 	c.colorMap = colorMap
 }
 
-// Create the collage of target from the imageSet
+// Create generates a collage by finding the closest image for each pixel in the target image.
+// It uses multiple threads to parallelize the process and improve performance.
+// The collage is then resized to the specified dimensions before being returned.
 func (c *Creator) Create() *image.RGBA {
 	targetBounds := c.targetImage.Bounds()
 	imageSetDims := c.settings.ImageSetDims
@@ -90,8 +73,8 @@ func (c *Creator) Create() *image.RGBA {
 		drawClosestImage := func(threadID int) {
 			defer wg.Done()
 			for pixel := start; pixel != end; pixel++ {
-				x := pixel % targetBounds.Dy()
-				y := pixel / targetBounds.Dy()
+				x := pixel % targetBounds.Dx()
+				y := pixel / targetBounds.Dx()
 
 				closestImage := c.colorMap.FindClosestImage(c.targetImage.At(x, y).(color.RGBA))
 				destRect := image.Rect(x*imageSetDims.Width+imageSetDims.Width,

@@ -21,6 +21,32 @@ func newRedImage() *image.RGBA {
 	return red
 }
 
+func newGreenImage() *image.RGBA {
+	bounds := image.Rect(0, 0, 100, 100)
+	green := image.NewRGBA(bounds)
+
+	for x := 0; x < bounds.Dx(); x++ {
+		for y := 0; y < bounds.Dy(); y++ {
+			green.Set(x, y, color.RGBA{0, 255, 0, 0})
+		}
+	}
+
+	return green
+}
+
+func newBlueImage() *image.RGBA {
+	bounds := image.Rect(0, 0, 100, 100)
+	blue := image.NewRGBA(bounds)
+
+	for x := 0; x < bounds.Dx(); x++ {
+		for y := 0; y < bounds.Dy(); y++ {
+			blue.Set(x, y, color.RGBA{0, 0, 255, 0})
+		}
+	}
+
+	return blue
+}
+
 func TestCalculateAverageColor(t *testing.T) {
 	red := newRedImage()
 	average := calculateAverageColor(*red)
@@ -44,5 +70,26 @@ func TestCaluculateColorDistance(t *testing.T) {
 		t.Fail()
 	}
 
+	t.Failed()
+}
+func TestFindClosestImage(t *testing.T) {
+	red := newRedImage()
+	green := newGreenImage()
+	blue := newBlueImage()
+
+	colormap := NewColorMap()
+	colormap.AddImage(red)
+	colormap.AddImage(green)
+	colormap.AddImage(blue)
+
+	target := color.RGBA{100, 100, 100, 0}
+	expected := red
+
+	result := colormap.FindClosestImage(target)
+
+	if result != expected {
+		log.Printf("TestFindClosestImage FAILED")
+		t.Fail()
+	}
 	t.Failed()
 }

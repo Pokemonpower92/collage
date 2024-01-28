@@ -6,44 +6,10 @@ import (
 	"math"
 )
 
-// ColorMap maps the average colors of an image to
-// that image.
-type ColorMap struct {
-	AverageColors []color.RGBA
-	ImageSet      []*image.RGBA
-}
-
-// Calculate the 4th-dimensional distance between two colors.
-func calculateColorDistance(one color.RGBA, two color.RGBA) float32 {
-	r := math.Pow(float64(one.R)-float64(two.R), 2)
-	g := math.Pow(float64(one.G)-float64(two.G), 2)
-	b := math.Pow(float64(one.B)-float64(two.B), 2)
-	a := math.Pow(float64(one.A)-float64(two.A), 2)
-
-	combo := r + g + b + a
-
-	return float32(math.Sqrt(combo))
-}
-
-// Finds the image from the image set with the
-// closest average color to the target color.
-func (colormap ColorMap) FindClosestImage(target color.RGBA) *image.RGBA {
-	smallestDist := float32(math.MaxFloat32)
-	closest := colormap.ImageSet[0]
-
-	for idx, color := range colormap.AverageColors {
-		dist := calculateColorDistance(color, target)
-		if dist < smallestDist {
-			smallestDist = dist
-			closest = colormap.ImageSet[idx]
-		}
-
-	}
-
-	return closest
-}
-
-// Returns the average color of an image.
+// calculateAverageColor calculates the average color of an image.
+// It takes an image.RGBA as input and returns the average color as a color.RGBA struct.
+// The average color is calculated by iterating through all pixels of the image,
+// summing up the color values, and dividing them by the total number of pixels.
 func calculateAverageColor(img image.RGBA) color.RGBA {
 	bounds := img.Bounds()
 	width := bounds.Dx()
@@ -74,13 +40,68 @@ func calculateAverageColor(img image.RGBA) color.RGBA {
 	return color.RGBA{R: uint8(avgR), G: uint8(avgG), B: uint8(avgB), A: uint8(avgA)}
 }
 
-// Creates a new ColorMap from the given image set.
-func NewColorMap(imageSet []*image.RGBA) ColorMap {
-	newMapping := ColorMap{}
+// calculateColorDistance calculates the Euclidean distance between two RGBA colors.
+// It takes two color.RGBA values as input and returns the distance as a float32 value.
+func calculateColorDistance(one color.RGBA, two color.RGBA) float32 {
+	// Calculate the squared differences for each color channel
+	r := math.Pow(float64(one.R)-float64(two.R), 2)
+	g := math.Pow(float64(one.G)-float64(two.G), 2)
+	b := math.Pow(float64(one.B)-float64(two.B), 2)
+	a := math.Pow(float64(one.A)-float64(two.A), 2)
 
-	for _, img := range imageSet {
-		newMapping.AverageColors = append(newMapping.AverageColors, calculateAverageColor(*img))
+	// Calculate the sum of squared differences
+	combo := r + g + b + a
+
+	// Return the square root of the sum as the distance
+	return float32(math.Sqrt(combo))
+}
+
+// ColorMap represents a collection of average colors and image sets.
+type ColorMap struct {
+	AverageColors []color.RGBA
+	ImageSet      []*image.RGBA
+}
+
+// NewColorMap creates a new ColorMap.
+// It initializes the AverageColors and ImageSet fields with empty slices.
+func NewColorMap() ColorMap {
+	return ColorMap{
+		AverageColors: make([]color.RGBA, 0),
+		ImageSet:      make([]*image.RGBA, 0),
 	}
-	newMapping.ImageSet = imageSet
-	return newMapping
+}
+
+// AddImage adds an image to the ColorMap.
+// It appends the image to the ImageSet and calculates the average color of the image,
+// which is then appended to the AverageColors slice.
+func (colormap *ColorMap) AddImage(img *image.RGBA) {
+	colormap.ImageSet = append(colormap.ImageSet, img)
+	colormap.AverageColors = append(colormap.AverageColors, calculateAverageColor(*img))
+}
+
+// AddImages adds multiple images to the ColorMap.
+// It takes a slice of *image.RGBA as input and calls AddImage for each image in the slice.
+func (colormap *ColorMap) AddImages(imgs []*image.RGBA) {
+	for _, img := range imgs {
+		colormap.AddImage(img)
+	}
+}
+
+// FindClosestImage finds the closest image in the colormap to the target color.
+// It calculates the color distance between each average color in the colormap and the target color,
+// and returns the image with the smallest color distance.
+// If the colormap is empty, it returns nil.
+func (colormap ColorMap) FindClosestImage(target color.RGBA) *image.RGBA {
+	smallestDist := float32(math.MaxFloat32)
+	closest := colormap.ImageSet[0]
+
+	for idx, color := range colormap.AverageColors {
+		dist := calculateColorDistance(color, target)
+		if dist < smallestDist {
+			smallestDist = dist
+			closest = colormap.ImageSet[idx]
+		}
+	}
+
+	return closest
 }

@@ -27,7 +27,8 @@ func main() {
 	} else {
 		slog.Info(fmt.Sprintf("Successfully loaded an image set.\n"))
 
-		colormap := colormap.NewColorMap(imageSet)
+		colormap := colormap.NewColorMap()
+		colormap.AddImages(imageSet)
 		slog.Info(fmt.Sprintf("Successfully generated colormapping.\n"))
 
 		ctr := creator.NewCreator(*imageLoaderSettings, *imageLoaderEnvironment)
