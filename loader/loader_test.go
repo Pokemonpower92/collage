@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"collage/common"
-	"collage/settings"
+	"github.com/pokemonpower92/collage/common"
+	"github.com/pokemonpower92/collage/settings"
 )
 
 func TestConvertToRGBA(t *testing.T) {

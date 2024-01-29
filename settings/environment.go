@@ -1,6 +1,8 @@
 package settings
 
 import (
+	"fmt"
+	"log/slog"
 	"os"
 	"strconv"
 
@@ -20,7 +22,7 @@ type Environment struct {
 func NewEnvironment() *Environment {
 	err := godotenv.Load(".env")
 	if err != nil {
-		panic("Error loading .env file")
+		slog.Info(fmt.Sprint("No .env file found. Defaulting to set environment"))
 	}
 
 	creatorThreads, err := strconv.Atoi(os.Getenv("CREATOR_THREADS"))
