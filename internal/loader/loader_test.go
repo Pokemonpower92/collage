@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/pokemonpower92/collage/common"
-	"github.com/pokemonpower92/collage/settings"
+	"github.com/pokemonpower92/collage/internal/common"
+	"github.com/pokemonpower92/collage/internal/settings"
 )
 
 func TestConvertToRGBA(t *testing.T) {
@@ -36,14 +36,14 @@ func TestLoadImage(t *testing.T) {
 	}{
 		{
 			name:           "Test case 1",
-			path:           "../images/test_images/target_images/gopher.png",
+			path:           "../../images/test_images/target_images/gopher.png",
 			dims:           common.Dimensions{Width: 200, Height: 200},
 			expectedWidth:  200,
 			expectedHeight: 200,
 		},
 		{
 			name:           "Test case 2",
-			path:           "../images/test_images/target_images/gopher.png",
+			path:           "../../images/test_images/target_images/gopher.png",
 			dims:           common.Dimensions{Width: 300, Height: 300},
 			expectedWidth:  300,
 			expectedHeight: 300,

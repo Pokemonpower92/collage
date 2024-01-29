@@ -8,9 +8,9 @@ import (
 	"log/slog"
 	"sync"
 
-	"github.com/pokemonpower92/collage/colormap"
-	"github.com/pokemonpower92/collage/common"
-	"github.com/pokemonpower92/collage/settings"
+	"github.com/pokemonpower92/collage/internal/colormap"
+	"github.com/pokemonpower92/collage/internal/common"
+	"github.com/pokemonpower92/collage/internal/settings"
 )
 
 // Creator is a struct that contains the settings and environment for creating a collage.

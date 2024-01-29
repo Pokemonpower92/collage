@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/pokemonpower92/collage/colormap"
-	"github.com/pokemonpower92/collage/creator"
-	"github.com/pokemonpower92/collage/exporter"
-	"github.com/pokemonpower92/collage/loader"
-	"github.com/pokemonpower92/collage/settings"
+	"github.com/pokemonpower92/collage/internal/colormap"
+	"github.com/pokemonpower92/collage/internal/creator"
+	"github.com/pokemonpower92/collage/internal/exporter"
+	"github.com/pokemonpower92/collage/internal/loader"
+	"github.com/pokemonpower92/collage/internal/settings"
 )
 
 func main() {
